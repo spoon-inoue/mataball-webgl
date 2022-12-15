@@ -24,7 +24,6 @@
 	"dependencies": {
 		"gsap": "^3.11.3",
 		"lil-gui": "^0.17.0",
-		"lottie-web": "^5.10.0",
 		"three": "^0.147.0"
 	}
 }
