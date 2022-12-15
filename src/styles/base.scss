@@ -1,5 +1,6 @@
 @use 'ress';
 @use './mixins/media.scss' as *;
+@use './mixins/fonts.scss' as fonts;
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;800&display=swap');
 
@@ -17,8 +18,7 @@ html {
 	@include pc {
 		font-size: calc(1000vw / 1500);
 	}
-	font-family: var(--font-poppins);
-	font-weight: var(--font-weight-regular);
+	@include fonts.dnp-shuei-gothic-gin-std;
 }
 
 body {

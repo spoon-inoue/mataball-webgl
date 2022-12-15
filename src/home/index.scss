@@ -36,9 +36,14 @@ main {
 		display: grid;
 		place-items: center;
 		font-size: 5rem;
+		color: #000;
 		@include sp {
 			font-size: 7rem;
 			padding: 0 5rem 0 7rem;
+		}
+
+		&--light {
+			color: #fff;
 		}
 	}
 
