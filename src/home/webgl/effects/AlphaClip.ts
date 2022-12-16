@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass'
-import fragmentShader from '../shader/alphaClipFrag.glsl'
-import vertexShader from '../shader/alphaClipVert.glsl'
+import { shaders } from '../shaders'
 import { gui } from '../utils/gui'
 
 class AlphaClip {
@@ -17,8 +16,8 @@ class AlphaClip {
 			uniforms: {
 				tDiffuse: { value: null },
 			},
-			vertexShader,
-			fragmentShader,
+			vertexShader: shaders.alphaClip.vertex,
+			fragmentShader: shaders.alphaClip.fragment,
 		}
 		return new ShaderPass(shader)
 	}

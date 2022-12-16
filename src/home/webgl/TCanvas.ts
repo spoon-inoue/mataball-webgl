@@ -3,8 +3,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import * as THREE from 'three'
 import { gl } from './core/WebGL'
 import { effects } from './effects/Effects'
-import fragmentShader from './shader/planeFrag.glsl'
-import vertexShader from './shader/planeVert.glsl'
+import { shaders } from './shaders'
 import { gui } from './utils/gui'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -33,52 +32,54 @@ export class TCanvas {
 	}
 
 	private createObjects() {
-		const material = new THREE.ShaderMaterial({
-			uniforms: {
-				u_progress: { value: 0 },
-				u_color1: { value: new THREE.Color() },
-				u_color2: { value: new THREE.Color() },
-			},
-			vertexShader,
-			fragmentShader,
-			transparent: true,
-		})
-
 		{
-			const geometry = new THREE.PlaneGeometry(1, 1, 100, 100)
-			const mat = material.clone()
-			mat.uniforms.u_color1.value.set(this.palette.ball1)
-			mat.uniforms.u_color2.value.set(this.palette.mix)
-			const mesh = new THREE.Mesh(geometry, mat)
+			const geometry = new THREE.PlaneGeometry()
+			const material = new THREE.ShaderMaterial({
+				uniforms: {
+					u_progress: { value: 0 },
+					u_color: { value: new THREE.Color(this.palette.ball1) },
+				},
+				vertexShader: shaders.ball1.vertex,
+				fragmentShader: shaders.ball1.fragment,
+				transparent: true,
+			})
+			const mesh = new THREE.Mesh(geometry, material)
 			mesh.scale.multiplyScalar(1.3)
 			mesh.position.z = -0.01
 			mesh.name = 'ball1'
 			gl.scene.add(mesh)
 
 			const folder = gui.addFolder('ball 1')
-			folder.addColor(mat.uniforms.u_color1, 'value').name('color 1')
-			folder.addColor(mat.uniforms.u_color2, 'value').name('color 2')
+			folder.addColor(material.uniforms.u_color, 'value').name('color')
 		}
 		{
-			const geometry = new THREE.PlaneGeometry(1, 1, 100, 100)
-			const mat = material.clone()
-			mat.uniforms.u_color1.value.set(this.palette.mix)
-			mat.uniforms.u_color2.value.set(this.palette.ball2)
-			const mesh = new THREE.Mesh(geometry, mat)
+			const geometry = new THREE.PlaneGeometry()
+			const material = new THREE.ShaderMaterial({
+				uniforms: {
+					u_progress: { value: 0 },
+					u_color1: { value: new THREE.Color(this.palette.ball2) },
+					u_color2: { value: new THREE.Color(this.palette.mix) },
+				},
+				vertexShader: shaders.ball2.vertex,
+				fragmentShader: shaders.ball2.fragment,
+				transparent: true,
+			})
+			const mesh = new THREE.Mesh(geometry, material)
 			mesh.scale.multiplyScalar(1.3)
 			mesh.position.y = -2.0
 			mesh.name = 'ball2'
 			gl.scene.add(mesh)
 
 			const folder = gui.addFolder('ball 2')
-			folder.addColor(mat.uniforms.u_color1, 'value').name('color 1')
-			folder.addColor(mat.uniforms.u_color2, 'value').name('color 2')
+			folder.add(material.uniforms.u_progress, 'value', 0, 1, 0.01).name('progress')
+			folder.addColor(material.uniforms.u_color1, 'value').name('color 1')
+			folder.addColor(material.uniforms.u_color2, 'value').name('color 2')
 		}
 	}
 
 	private ceateGsapAnimation() {
 		const ball1 = gl.getMesh<THREE.ShaderMaterial>('ball1')
-		const ball2 = gl.getMesh('ball2')
+		const ball2 = gl.getMesh<THREE.ShaderMaterial>('ball2')
 
 		const tl = gsap.timeline({
 			scrollTrigger: {
@@ -90,15 +91,12 @@ export class TCanvas {
 		})
 
 		tl.to(ball1.material.uniforms.u_progress, { value: 1 }, 0)
+		tl.to(ball2.material.uniforms.u_progress, { value: 1 }, '<30%')
 		tl.to(ball2.position, { y: 0 }, 0)
 	}
 
 	private setAnimationFrame() {
 		const anime = () => {
-			// const et = gl.time.getElapsedTime()
-			// gl.getMesh('ball1').position.x = Math.sin(et * 0.5)
-			// gl.getMesh('ball2').position.x = Math.sin(-et * 0.5)
-
 			// gl.render()
 			effects.render()
 			requestAnimationFrame(anime)
