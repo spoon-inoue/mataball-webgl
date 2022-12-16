@@ -12,9 +12,9 @@ export class TCanvas {
 	private animeID?: number
 
 	private palette = {
-		ball1: '#41D1FF',
-		ball2: '#FFDD35',
-		mix: '#BD34FE',
+		ball1: '#b9e3f9',
+		ball2: '#fdeea5',
+		mix: '#f9d3c3',
 	}
 
 	constructor(private parentNode: ParentNode) {
@@ -71,7 +71,6 @@ export class TCanvas {
 			gl.scene.add(mesh)
 
 			const folder = gui.addFolder('ball 2')
-			folder.add(material.uniforms.u_progress, 'value', 0, 1, 0.01).name('progress')
 			folder.addColor(material.uniforms.u_color1, 'value').name('color 1')
 			folder.addColor(material.uniforms.u_color2, 'value').name('color 2')
 		}
